@@ -1,5 +1,5 @@
 // src/api.jsx
-const API = 'http://127.0.0.1:5000/api'
+const API = 'https://notalyx-backend-production.up.railway.app/api'
 
 // ── AUTH ──────────────────────────────────────────────────────
 export async function apiLogin(username, senha) {
