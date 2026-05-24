@@ -22,7 +22,6 @@ export default function CadastroMaterias({ user, onLogout }) {
   const [toast, setToast]         = useState(null)
   const [configLoad, setConfigLoad] = useState(true)
 
-  // ── Carrega config do banco ao entrar ─────────────────────
   useEffect(() => {
     async function carregarConfig() {
       try {
@@ -88,7 +87,6 @@ export default function CadastroMaterias({ user, onLogout }) {
 
       <div className="main">
 
-        {/* ── CONFIGURAÇÃO ── */}
         <div className="config-card">
           <div className="card-title">⚙ Configuração Escolar</div>
           <div className="config-grid">
@@ -146,7 +144,6 @@ export default function CadastroMaterias({ user, onLogout }) {
           </div>
         </div>
 
-        {/* ── FORMULÁRIO ── */}
         <div className="add-form">
           <div className="card-title">➕ Nova Matéria</div>
           <form

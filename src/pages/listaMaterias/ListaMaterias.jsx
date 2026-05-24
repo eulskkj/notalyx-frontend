@@ -1,5 +1,5 @@
 // src/pages/listaMaterias/ListaMaterias.jsx
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import Header from '../../components/Header.jsx'
 import {
   apiCarregarMaterias,
@@ -27,7 +27,6 @@ export default function ListaMaterias({ user, onLogout }) {
     setTimeout(() => setToast(null), 3500)
   }
 
-  // ── Carrega config + matérias ao entrar ───────────────────
   useEffect(() => {
     async function init() {
       setLoading(true)
@@ -71,7 +70,6 @@ export default function ListaMaterias({ user, onLogout }) {
     }
   }
 
-  // ── Edição ────────────────────────────────────────────────
   function abrirEdicao(sub) {
     setEditSub(sub)
     setEditGrades([...sub.grades])
@@ -101,7 +99,6 @@ export default function ListaMaterias({ user, onLogout }) {
     }
   }
 
-  // ── Resumo ────────────────────────────────────────────────
   const calcs     = subjects.map(s => calcSubject(s, config))
   const okCount   = calcs.filter(c => c.avg !== null && c.avg >= config.avgGoal).length
   const badCount  = calcs.filter(c => c.needed !== null && c.needed > config.maxGrade).length
@@ -116,7 +113,6 @@ export default function ListaMaterias({ user, onLogout }) {
 
       <div className="main">
 
-        {/* ── CONFIG ── */}
         <div className="config-card">
           <div className="card-title">⚙ Configuração Escolar</div>
           <div className="config-grid">
@@ -135,7 +131,7 @@ export default function ListaMaterias({ user, onLogout }) {
 
             <div className="config-field">
               <label>Média para Aprovação</label>
-             <input
+              <input
                 type="text"
                 inputMode="numeric"
                 value={avgInput}
@@ -169,13 +165,11 @@ export default function ListaMaterias({ user, onLogout }) {
                   }
                 }}
               />
-
             </div>
 
           </div>
         </div>
 
-        {/* ── RESUMO ── */}
         {subjects.length > 0 && (
           <div className="summary-grid">
             <div className="summary-card blue">
@@ -197,7 +191,6 @@ export default function ListaMaterias({ user, onLogout }) {
           </div>
         )}
 
-        {/* ── TABELA ── */}
         <div className="section-header">
           <div className="section-title">
             <small>// suas matérias</small>
@@ -288,7 +281,6 @@ export default function ListaMaterias({ user, onLogout }) {
         </div>
       </div>
 
-      {/* ── MODAL EDIÇÃO ── */}
       {editSub && (
         <div className="modal-overlay" onClick={() => setEditSub(null)}>
           <div className="modal" onClick={e => e.stopPropagation()}>
