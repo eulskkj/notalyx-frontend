@@ -135,14 +135,19 @@ export default function ListaMaterias({ user, onLogout }) {
 
             <div className="config-field">
               <label>Média para Aprovação</label>
-              <input
-                type="number" min={0} max={100} step={1}
+             <input
+                type="text"
+                inputMode="numeric"
                 value={avgInput}
-                onChange={e => setAvgInput(e.target.value)}
+                onChange={e => setAvgInput(e.target.value.replace(/[^0-9.]/g, ''))}
                 onBlur={e => {
-                  const v = parseFloat(e.target.value) || 60
-                  setAvgInput(String(v))
-                  handleConfigChange({ ...config, avgGoal: v })
+                  const v = parseFloat(e.target.value)
+                  if (!isNaN(v) && v > 0) {
+                    setAvgInput(String(v))
+                    handleConfigChange({ ...config, avgGoal: v })
+                  } else {
+                    setAvgInput(String(config.avgGoal))
+                  }
                 }}
               />
             </div>
@@ -150,15 +155,21 @@ export default function ListaMaterias({ user, onLogout }) {
             <div className="config-field">
               <label>Nota Máxima</label>
               <input
-                type="number" min={1} max={100} step={1}
+                type="text"
+                inputMode="numeric"
                 value={maxInput}
-                onChange={e => setMaxInput(e.target.value)}
+                onChange={e => setMaxInput(e.target.value.replace(/[^0-9.]/g, ''))}
                 onBlur={e => {
-                  const v = parseFloat(e.target.value) || 100
-                  setMaxInput(String(v))
-                  handleConfigChange({ ...config, maxGrade: v })
+                  const v = parseFloat(e.target.value)
+                  if (!isNaN(v) && v > 0) {
+                    setMaxInput(String(v))
+                    handleConfigChange({ ...config, maxGrade: v })
+                  } else {
+                    setMaxInput(String(config.maxGrade))
+                  }
                 }}
               />
+
             </div>
 
           </div>
