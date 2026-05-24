@@ -7,7 +7,7 @@ import {
   apiCarregarConfig,
   apiSalvarConfig,
   padGrades,
-} from '../../Api.jsx'
+} from '../../Api.js'
 import '../../style.css'
 
 export default function CadastroMaterias({ user, onLogout }) {
@@ -104,18 +104,18 @@ export default function CadastroMaterias({ user, onLogout }) {
             <div className="config-field">
               <label>Média para Aprovação</label>
               <input
-                type="number" min={0} max={100} step={1}
-                value={config.avgGoal}
-                onChange={e => handleConfigChange({ ...config, avgGoal: parseFloat(e.target.value) || 60 })}
+              type="number" min={0} max={100} step={1}
+              defaultValue={config.avgGoal}
+              onBlur={e => handleConfigChange({ ...config, avgGoal: parseFloat(e.target.value) || 60 })}
               />
             </div>
             <div className="config-field">
               <label>Nota Máxima por Unidade</label>
-              <input
-                type="number" min={1} max={100} step={1}
-                value={config.maxGrade}
-                onChange={e => handleConfigChange({ ...config, maxGrade: parseFloat(e.target.value) || 100 })}
-              />
+             <input
+              type="number" min={1} max={100} step={1}
+              defaultValue={config.maxGrade}
+             onBlur={e => handleConfigChange({ ...config, maxGrade: parseFloat(e.target.value) || 100 })}
+            />
             </div>
           </div>
         </div>
