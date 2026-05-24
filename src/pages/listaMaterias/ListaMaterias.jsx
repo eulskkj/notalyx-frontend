@@ -13,11 +13,13 @@ import {
 import '../../style.css'
 
 export default function ListaMaterias({ user, onLogout }) {
-  const [subjects, setSubjects]   = useState([])
-  const [config, setConfig]       = useState({ units: 4, avgGoal: 60, maxGrade: 100 })
-  const [loading, setLoading]     = useState(true)
-  const [toast, setToast]         = useState(null)
-  const [editSub, setEditSub]     = useState(null)
+  const [subjects, setSubjects]     = useState([])
+  const [config, setConfig]         = useState({ units: 4, avgGoal: 60, maxGrade: 100 })
+  const [avgInput, setAvgInput]     = useState('60')
+  const [maxInput, setMaxInput]     = useState('100')
+  const [loading, setLoading]       = useState(true)
+  const [toast, setToast]           = useState(null)
+  const [editSub, setEditSub]       = useState(null)
   const [editGrades, setEditGrades] = useState([])
 
   function showToast(msg) {
@@ -30,7 +32,6 @@ export default function ListaMaterias({ user, onLogout }) {
     async function init() {
       setLoading(true)
       try {
-        // Carrega config primeiro
         const cfg = await apiCarregarConfig(user.username)
         const configAtual = {
           units:    cfg.units,
@@ -38,8 +39,9 @@ export default function ListaMaterias({ user, onLogout }) {
           maxGrade: cfg.max_grade,
         }
         setConfig(configAtual)
+        setAvgInput(String(cfg.avg_goal))
+        setMaxInput(String(cfg.max_grade))
 
-        // Depois carrega matérias com o nº correto de unidades
         const data = await apiCarregarMaterias(user.username)
         setSubjects(data.map(s => ({
           ...s,
@@ -54,14 +56,12 @@ export default function ListaMaterias({ user, onLogout }) {
     init()
   }, [user.username])
 
-  // Repadeia grades ao mudar nº de unidades
   useEffect(() => {
     setSubjects(prev =>
       prev.map(s => ({ ...s, grades: padGrades(s.grades, config.units) }))
     )
   }, [config.units])
 
-  // ── Atualiza config e salva no banco ─────────────────────
   async function handleConfigChange(newConfig) {
     setConfig(newConfig)
     try {
@@ -71,7 +71,7 @@ export default function ListaMaterias({ user, onLogout }) {
     }
   }
 
-  // ── Edição ───────────────────────────────────────────────
+  // ── Edição ────────────────────────────────────────────────
   function abrirEdicao(sub) {
     setEditSub(sub)
     setEditGrades([...sub.grades])
@@ -120,6 +120,7 @@ export default function ListaMaterias({ user, onLogout }) {
         <div className="config-card">
           <div className="card-title">⚙ Configuração Escolar</div>
           <div className="config-grid">
+
             <div className="config-field">
               <label>Quantidade de Unidades</label>
               <select
@@ -131,22 +132,35 @@ export default function ListaMaterias({ user, onLogout }) {
                 <option value={4}>4 Unidades</option>
               </select>
             </div>
+
             <div className="config-field">
               <label>Média para Aprovação</label>
               <input
-                type="number" min={0} max={100}
-                value={config.avgGoal}
-                onChange={e => handleConfigChange({ ...config, avgGoal: parseFloat(e.target.value) || 60 })}
+                type="number" min={0} max={100} step={1}
+                value={avgInput}
+                onChange={e => setAvgInput(e.target.value)}
+                onBlur={e => {
+                  const v = parseFloat(e.target.value) || 60
+                  setAvgInput(String(v))
+                  handleConfigChange({ ...config, avgGoal: v })
+                }}
               />
             </div>
+
             <div className="config-field">
               <label>Nota Máxima</label>
               <input
-                type="number" min={1} max={100}
-                value={config.maxGrade}
-                onChange={e => handleConfigChange({ ...config, maxGrade: parseFloat(e.target.value) || 100 })}
+                type="number" min={1} max={100} step={1}
+                value={maxInput}
+                onChange={e => setMaxInput(e.target.value)}
+                onBlur={e => {
+                  const v = parseFloat(e.target.value) || 100
+                  setMaxInput(String(v))
+                  handleConfigChange({ ...config, maxGrade: v })
+                }}
               />
             </div>
+
           </div>
         </div>
 
