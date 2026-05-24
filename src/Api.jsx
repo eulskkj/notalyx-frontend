@@ -1,4 +1,4 @@
-// src/api.jsx
+// src/api.js
 const API = 'https://notalyx-backend-production.up.railway.app/api'
 
 // ── AUTH ──────────────────────────────────────────────────────
@@ -10,7 +10,7 @@ export async function apiLogin(username, senha) {
   })
   const data = await res.json()
   if (!res.ok) throw new Error(data.error || 'Usuário ou senha incorretos.')
-  return data.user // { username, nome_exibicao }
+  return data.user
 }
 
 export async function apiRegistrar(username, senha, nome_exibicao) {
@@ -21,6 +21,29 @@ export async function apiRegistrar(username, senha, nome_exibicao) {
   })
   const data = await res.json()
   if (!res.ok) throw new Error(data.error || 'Erro ao criar conta.')
+  return data
+}
+
+// ── CONFIGURAÇÃO ──────────────────────────────────────────────
+export async function apiCarregarConfig(username) {
+  const res  = await fetch(`${API}/config/${username}`)
+  const data = await res.json()
+  if (!res.ok) throw new Error(data.error || 'Erro ao carregar configuração.')
+  return data // { units, avg_goal, max_grade }
+}
+
+export async function apiSalvarConfig(username, config) {
+  const res  = await fetch(`${API}/config/${username}`, {
+    method:  'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({
+      units:    config.units,
+      avgGoal:  config.avgGoal,
+      maxGrade: config.maxGrade,
+    }),
+  })
+  const data = await res.json()
+  if (!res.ok) throw new Error(data.error || 'Erro ao salvar configuração.')
   return data
 }
 
