@@ -5,18 +5,13 @@ import {
   apiCarregarMaterias,
   apiAtualizarNotas,
   apiDeletarMateria,
-  apiCarregarConfig,
-  apiSalvarConfig,
   padGrades,
   calcSubject,
 } from '../../Api.jsx'
 import '../../style.css'
 
-export default function ListaMaterias({ user, onLogout }) {
+export default function ListaMaterias({ user, config, onConfigChange, onLogout }) {
   const [subjects, setSubjects]     = useState([])
-  const [config, setConfig]         = useState({ units: 4, avgGoal: 60, maxGrade: 100 })
-  const [avgInput, setAvgInput]     = useState('60')
-  const [maxInput, setMaxInput]     = useState('100')
   const [loading, setLoading]       = useState(true)
   const [toast, setToast]           = useState(null)
   const [editSub, setEditSub]       = useState(null)
@@ -27,24 +22,15 @@ export default function ListaMaterias({ user, onLogout }) {
     setTimeout(() => setToast(null), 3500)
   }
 
+  // Carrega matérias ao entrar
   useEffect(() => {
-    async function init() {
+    async function carregar() {
       setLoading(true)
       try {
-        const cfg = await apiCarregarConfig(user.username)
-        const configAtual = {
-          units:    cfg.units,
-          avgGoal:  cfg.avg_goal,
-          maxGrade: cfg.max_grade,
-        }
-        setConfig(configAtual)
-        setAvgInput(String(cfg.avg_goal))
-        setMaxInput(String(cfg.max_grade))
-
         const data = await apiCarregarMaterias(user.username)
         setSubjects(data.map(s => ({
           ...s,
-          grades: padGrades(s.grades, configAtual.units),
+          grades: padGrades(s.grades, config.units),
         })))
       } catch (err) {
         showToast(`⚠ ${err.message}`)
@@ -52,23 +38,15 @@ export default function ListaMaterias({ user, onLogout }) {
         setLoading(false)
       }
     }
-    init()
+    carregar()
   }, [user.username])
 
+  // Repadeia grades quando muda nº de unidades
   useEffect(() => {
     setSubjects(prev =>
       prev.map(s => ({ ...s, grades: padGrades(s.grades, config.units) }))
     )
   }, [config.units])
-
-  async function handleConfigChange(newConfig) {
-    setConfig(newConfig)
-    try {
-      await apiSalvarConfig(user.username, newConfig)
-    } catch (err) {
-      // silencioso
-    }
-  }
 
   function abrirEdicao(sub) {
     setEditSub(sub)
@@ -113,6 +91,7 @@ export default function ListaMaterias({ user, onLogout }) {
 
       <div className="main">
 
+        {/* ── CONFIG ── */}
         <div className="config-card">
           <div className="card-title">⚙ Configuração Escolar</div>
           <div className="config-grid">
@@ -121,7 +100,7 @@ export default function ListaMaterias({ user, onLogout }) {
               <label>Quantidade de Unidades</label>
               <select
                 value={config.units}
-                onChange={e => handleConfigChange({ ...config, units: parseInt(e.target.value) })}
+                onChange={e => onConfigChange({ ...config, units: parseInt(e.target.value) })}
               >
                 <option value={2}>2 Unidades</option>
                 <option value={3}>3 Unidades</option>
@@ -132,18 +111,13 @@ export default function ListaMaterias({ user, onLogout }) {
             <div className="config-field">
               <label>Média para Aprovação</label>
               <input
-                type="text"
-                inputMode="numeric"
-                value={avgInput}
-                onChange={e => setAvgInput(e.target.value.replace(/[^0-9.]/g, ''))}
+                type="number"
+                placeholder={String(config.avgGoal)}
+                onFocus={e => e.target.select()}
                 onBlur={e => {
                   const v = parseFloat(e.target.value)
-                  if (!isNaN(v) && v > 0) {
-                    setAvgInput(String(v))
-                    handleConfigChange({ ...config, avgGoal: v })
-                  } else {
-                    setAvgInput(String(config.avgGoal))
-                  }
+                  if (!isNaN(v) && v > 0) onConfigChange({ ...config, avgGoal: v })
+                  e.target.value = ''
                 }}
               />
             </div>
@@ -151,18 +125,13 @@ export default function ListaMaterias({ user, onLogout }) {
             <div className="config-field">
               <label>Nota Máxima</label>
               <input
-                type="text"
-                inputMode="numeric"
-                value={maxInput}
-                onChange={e => setMaxInput(e.target.value.replace(/[^0-9.]/g, ''))}
+                type="number"
+                placeholder={String(config.maxGrade)}
+                onFocus={e => e.target.select()}
                 onBlur={e => {
                   const v = parseFloat(e.target.value)
-                  if (!isNaN(v) && v > 0) {
-                    setMaxInput(String(v))
-                    handleConfigChange({ ...config, maxGrade: v })
-                  } else {
-                    setMaxInput(String(config.maxGrade))
-                  }
+                  if (!isNaN(v) && v > 0) onConfigChange({ ...config, maxGrade: v })
+                  e.target.value = ''
                 }}
               />
             </div>
@@ -170,6 +139,7 @@ export default function ListaMaterias({ user, onLogout }) {
           </div>
         </div>
 
+        {/* ── RESUMO ── */}
         {subjects.length > 0 && (
           <div className="summary-grid">
             <div className="summary-card blue">
@@ -191,6 +161,7 @@ export default function ListaMaterias({ user, onLogout }) {
           </div>
         )}
 
+        {/* ── TABELA ── */}
         <div className="section-header">
           <div className="section-title">
             <small>// suas matérias</small>
