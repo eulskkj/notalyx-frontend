@@ -1,7 +1,7 @@
 // src/pages/cadastroMaterias/CadastroMaterias.jsx
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Header from '../../components/Header.jsx'
+import Header from '../components/Header.jsx'
 import {
   apiSalvarMateria,
   apiCarregarConfig,
