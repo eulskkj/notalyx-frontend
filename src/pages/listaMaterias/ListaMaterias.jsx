@@ -1,6 +1,6 @@
 // src/pages/listaMaterias/ListaMaterias.jsx
 import { useState, useEffect } from 'react'
-import Header from '../../components/Header.jsx'
+import Header from '../components/Header.jsx'
 import {
   apiCarregarMaterias,
   apiAtualizarNotas,
