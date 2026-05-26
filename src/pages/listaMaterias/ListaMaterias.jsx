@@ -22,7 +22,6 @@ export default function ListaMaterias({ user, config, onConfigChange, onLogout }
     setTimeout(() => setToast(null), 3500)
   }
 
-  // Carrega matérias ao entrar
   useEffect(() => {
     async function carregar() {
       setLoading(true)
@@ -41,7 +40,6 @@ export default function ListaMaterias({ user, config, onConfigChange, onLogout }
     carregar()
   }, [user.username])
 
-  // Repadeia grades quando muda nº de unidades
   useEffect(() => {
     setSubjects(prev =>
       prev.map(s => ({ ...s, grades: padGrades(s.grades, config.units) }))
@@ -90,54 +88,6 @@ export default function ListaMaterias({ user, config, onConfigChange, onLogout }
       <Header user={user} onLogout={onLogout} />
 
       <div className="main">
-
-        {/* ── CONFIG ── */}
-        <div className="config-card">
-          <div className="card-title">⚙ Configuração Escolar</div>
-          <div className="config-grid">
-
-            <div className="config-field">
-              <label>Quantidade de Unidades</label>
-              <select
-                value={config.units}
-                onChange={e => onConfigChange({ ...config, units: parseInt(e.target.value) })}
-              >
-                <option value={2}>2 Unidades</option>
-                <option value={3}>3 Unidades</option>
-                <option value={4}>4 Unidades</option>
-              </select>
-            </div>
-
-            <div className="config-field">
-              <label>Média para Aprovação</label>
-              <input
-                type="number"
-                placeholder={String(config.avgGoal)}
-                onFocus={e => e.target.select()}
-                onBlur={e => {
-                  const v = parseFloat(e.target.value)
-                  if (!isNaN(v) && v > 0) onConfigChange({ ...config, avgGoal: v })
-                  e.target.value = ''
-                }}
-              />
-            </div>
-
-            <div className="config-field">
-              <label>Nota Máxima</label>
-              <input
-                type="number"
-                placeholder={String(config.maxGrade)}
-                onFocus={e => e.target.select()}
-                onBlur={e => {
-                  const v = parseFloat(e.target.value)
-                  if (!isNaN(v) && v > 0) onConfigChange({ ...config, maxGrade: v })
-                  e.target.value = ''
-                }}
-              />
-            </div>
-
-          </div>
-        </div>
 
         {/* ── RESUMO ── */}
         {subjects.length > 0 && (
@@ -252,6 +202,7 @@ export default function ListaMaterias({ user, config, onConfigChange, onLogout }
         </div>
       </div>
 
+      {/* ── MODAL EDIÇÃO ── */}
       {editSub && (
         <div className="modal-overlay" onClick={() => setEditSub(null)}>
           <div className="modal" onClick={e => e.stopPropagation()}>
