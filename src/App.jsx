@@ -6,6 +6,7 @@ import Login            from './pages/login/Login.jsx'
 import Registro         from './pages/registro/Registro.jsx'
 import CadastroMaterias from './pages/cadastroMaterias/CadastroMaterias.jsx'
 import ListaMaterias    from './pages/listaMaterias/ListaMaterias.jsx'
+
 import { apiCarregarConfig, apiSalvarConfig } from './Api.jsx'
 
 export default function App() {
