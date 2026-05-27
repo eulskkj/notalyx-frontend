@@ -7,7 +7,7 @@ import Registro         from './pages/registro/Registro.jsx'
 import CadastroMaterias from './pages/cadastroMaterias/CadastroMaterias.jsx'
 import ListaMaterias    from './pages/listaMaterias/ListaMaterias.jsx'
 
-import { apiCarregarConfig, apiSalvarConfig } from './Api.jsx'
+// import { apiCarregarConfig, apiSalvarConfig } from './Api.jsx'
 
 export default function App() {
   const [user, setUser]   = useState(null)
