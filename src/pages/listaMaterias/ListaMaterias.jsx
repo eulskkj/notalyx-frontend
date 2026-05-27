@@ -38,7 +38,7 @@ export default function ListaMaterias({ user, config, onConfigChange, onLogout }
       }
     }
     carregar()
-  }, [user.username])
+  }, [user.username, config.units])
 
   useEffect(() => {
     setSubjects(prev =>

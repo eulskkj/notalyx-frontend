@@ -1,4 +1,3 @@
-// src/App.jsx
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 
@@ -6,14 +5,12 @@ import Login            from './pages/login/Login.jsx'
 import Registro         from './pages/registro/Registro.jsx'
 import CadastroMaterias from './pages/cadastroMaterias/CadastroMaterias.jsx'
 import ListaMaterias    from './pages/listaMaterias/ListaMaterias.jsx'
-
-// import { apiCarregarConfig, apiSalvarConfig } from './Api.jsx'
+import { apiCarregarConfig, apiSalvarConfig } from './Api.jsx'
 
 export default function App() {
-  const [user, setUser]   = useState(null)
+  const [user, setUser]     = useState(null)
   const [config, setConfig] = useState({ units: 4, avgGoal: 60, maxGrade: 100 })
 
-  // Carrega config do banco quando o usuário loga
   useEffect(() => {
     if (!user) return
     async function carregar() {
@@ -31,7 +28,6 @@ export default function App() {
     carregar()
   }, [user])
 
-  // Salva config no banco e atualiza estado global
   async function handleConfigChange(newConfig) {
     setConfig(newConfig)
     if (user) {
