@@ -64,7 +64,7 @@ export default function CadastroMaterias({ user, config, onConfigChange, onLogou
             </div>
 
             <div className="config-field">
-              <label>Média para Aprovação</label>
+              <label>Meta Total (soma das unidades)</label>
               <input
                 type="number"
                 placeholder={String(config.avgGoal)}
