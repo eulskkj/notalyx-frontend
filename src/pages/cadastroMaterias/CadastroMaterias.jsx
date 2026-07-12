@@ -120,7 +120,17 @@ export default function CadastroMaterias({ user, config, onConfigChange, onLogou
                   placeholder="—"
                   value={newGrades[i] ?? ''}
                   onChange={e => setNewGrades(g => {
-                    const n = [...g]; n[i] = e.target.value; return n
+                    const n = [...g]
+                    let raw = e.target.value
+                    if (raw !== '') {
+                      const v = parseFloat(raw)
+                      if (!isNaN(v)) {
+                        if (v > config.maxGrade) raw = String(config.maxGrade)
+                        if (v < 0) raw = '0'
+                      }
+                    }
+                    n[i] = raw
+                    return n
                   })}
                 />
               </div>
