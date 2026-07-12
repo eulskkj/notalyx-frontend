@@ -96,13 +96,15 @@ export function calcSubject(subject, config) {
   const avg       = filled.length > 0 ? sum / filled.length : null
   const remaining = config.units - filled.length
 
+  // config.avgGoal é a META TOTAL (soma de todas as unidades), ex: 15 pontos em 3 unidades
+  const goal = config.avgGoal
+
   let needed = null
-  if (remaining > 0 && avg !== null) {
-    needed = (config.avgGoal * config.units - sum) / remaining
-  } else if (remaining > 0) {
-    needed = config.avgGoal
+  if (remaining > 0) {
+    needed = (goal - sum) / remaining // quanto precisa tirar, em média, em cada unidade restante
   }
 
-  const lacking = avg !== null ? Math.max(0, config.avgGoal - avg) : null
-  return { avg, needed, lacking, remaining }
+  const lacking = Math.max(0, goal - sum) // quanto falta no total pra bater a meta
+
+  return { avg, sum, needed, lacking, remaining }
 }
