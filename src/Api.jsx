@@ -1,4 +1,4 @@
-const API = 'https://notalyx-backend.onrender.com'
+const API = 'https://notalyx-backend.onrender.com/api'
 
 // ── AUTH ──────────────────────────────────────────────────────
 export async function apiLogin(username, senha) {
