@@ -217,7 +217,16 @@ export default function ListaMaterias({ user, config, onConfigChange, onLogout }
                     placeholder="—"
                     onChange={e => setEditGrades(gr => {
                       const n = [...gr]
-                      n[i] = e.target.value === '' ? null : parseFloat(e.target.value)
+                      if (e.target.value === '') {
+                        n[i] = null
+                      } else {
+                        let v = parseFloat(e.target.value)
+                        if (!isNaN(v)) {
+                          if (v > config.maxGrade) v = config.maxGrade
+                          if (v < 0) v = 0
+                          n[i] = v
+                        }
+                      }
                       return n
                     })}
                   />
