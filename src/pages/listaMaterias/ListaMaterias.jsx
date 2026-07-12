@@ -76,8 +76,8 @@ export default function ListaMaterias({ user, config, onConfigChange, onLogout }
   }
 
   const calcs     = subjects.map(s => calcSubject(s, config))
-  const okCount   = calcs.filter(c => c.avg !== null && c.avg >= config.avgGoal).length
-  const badCount  = calcs.filter(c => c.needed !== null && c.needed > config.maxGrade).length
+  const okCount   = calcs.filter(c => c.sum >= config.avgGoal).length
+  const badCount  = calcs.filter(c => c.sum < config.avgGoal && c.needed !== null && c.needed > config.maxGrade).length
   const avgs      = calcs.filter(c => c.avg !== null).map(c => c.avg)
   const globalAvg = avgs.length > 0
     ? (avgs.reduce((a, b) => a + b, 0) / avgs.length).toFixed(1)
@@ -151,21 +151,21 @@ export default function ListaMaterias({ user, config, onConfigChange, onLogout }
                   </div>
                 </td></tr>
               ) : subjects.map((sub, idx) => {
-                const { avg, needed, lacking } = calcs[idx]
+                const { avg, sum, needed, lacking } = calcs[idx]
 
                 let badgeClass = 'badge-warn', badgeText = 'Sem notas'
                 let pctFill = 0, fillColor = 'var(--yellow)'
 
                 if (avg !== null) {
-                  if (avg >= config.avgGoal) {
+                  if (sum >= config.avgGoal) {
                     badgeClass = 'badge-ok';  badgeText = '✓ Aprovado'
                     pctFill = 100;            fillColor = 'var(--green)'
                   } else if (needed !== null && needed > config.maxGrade) {
                     badgeClass = 'badge-bad'; badgeText = '✗ Crítico'
-                    pctFill = (avg / config.avgGoal) * 100; fillColor = 'var(--red)'
+                    pctFill = (sum / config.avgGoal) * 100; fillColor = 'var(--red)'
                   } else {
                     badgeText = '⚡ Atenção'
-                    pctFill = (avg / config.avgGoal) * 100; fillColor = 'var(--yellow)'
+                    pctFill = (sum / config.avgGoal) * 100; fillColor = 'var(--yellow)'
                   }
                 }
 
